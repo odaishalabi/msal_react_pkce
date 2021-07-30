@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Build
+        run: |
+          npm install
+          npm run-script build
+        env:
+          REACT_APP_CLIENT_ID: ${{ secrets.REACT_APP_CLIENT_ID }}
+          REACT_APP_AUTHORITY: ${{ secrets.REACT_APP_AUTHORITY }}
+          REACT_APP_REDIRECT_URL: ${{ secrets.REACT_APP_REDIRECT_URL }}
+          REACT_APP_GRAPH_ENDPOINT: ${{ secrets.REACT_APP_GRAPH_ENDPOINT }}
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
